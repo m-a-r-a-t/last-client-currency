@@ -1,12 +1,12 @@
 const { urlParse } = require('./urlFunctions')
+const { getData } = require('./requestFunctions')
+const { userAvailable, userSet } = require('./usersFunctions')
+const { apiResponse } = require('./responseFunctions')
 const express = require('express')
 const app = express()
-const fetch = require('node-fetch')
 const urlapi = require('url')
 const http = require('http').createServer(app)
 const PORT = 5000
-const users = new Map()
-const burl = 'https://api.binance.com/api/v3/klines?'
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
@@ -22,19 +22,14 @@ app.use(express.urlencoded({ extended: true }))
 app.get('/api', (req, res) => {
   console.log('новый запрос')
   const url = urlapi.parse(req.url)
-  const query = urlParse(url.query, 'query')
+  const { query, id } = urlParse(url.query)
 
-  fetch(burl + query)
-    .then((response) => response.json())
+  getData(query)
     .then((json) => {
-      users.set(urlParse(url.query, 'id'), {
-        id: urlParse(url.query, 'id'),
-        lastValue: json[0][4],
-      })
+      userSet(id, { id, lastValue: json[0][4] })
       return json
     })
-    .then((json) => res.json(json[0][4]))
-  console.log(users)
+    .then((json) => res.end(json[0][4]))
 })
 
 http.listen(PORT, () => console.log(`Server started on port : ${PORT}`))
