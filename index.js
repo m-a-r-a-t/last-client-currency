@@ -6,6 +6,7 @@ const app = express()
 const urlapi = require('url')
 const http = require('http').createServer(app)
 const PORT = 5000
+const regexp = /symbol=([A-Z]){1,10}&id=([A-Za-z0-9]{3,16}$)/
 
 app.use(function (req, res, next) {
   res.header('Access-Control-Allow-Origin', '*')
@@ -15,11 +16,17 @@ app.use(function (req, res, next) {
   )
   next()
 })
-app.use(express.json())
-app.use(express.urlencoded({ extended: true }))
 
 app.get('/api', (req, res) => {
   const url = urlapi.parse(req.url)
+
+  if (!regexp.test(url.query)) {
+    res.send({
+      message: 'Не корректный вызов api. Смотрите шаблон !',
+      code: 404,
+    })
+    return
+  }
   const { query, id, symbol } = urlParse(url.query)
 
   getData(query).then((json) => {
