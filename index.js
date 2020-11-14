@@ -5,7 +5,7 @@ const express = require('express')
 const app = express()
 const urlapi = require('url')
 const http = require('http').createServer(app)
-const PORT = 5000 || process.env.PORT
+const PORT = process.env.PORT || 5000
 const regexp = /symbol=([A-Z]){1,10}&id=([A-Za-z0-9]{3,16}$)/
 
 app.use(function (req, res, next) {
