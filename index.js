@@ -5,7 +5,7 @@ const express = require('express')
 const app = express()
 const urlapi = require('url')
 const http = require('http').createServer(app)
-const PORT = 5000
+const PORT = process.env.PORT || 5000
 const regexp = /symbol=([A-Z]){1,10}&id=([A-Za-z0-9]{3,16}$)/
 
 app.use(function (req, res, next) {
@@ -16,6 +16,10 @@ app.use(function (req, res, next) {
   )
   next()
 })
+
+app.get('/', (req, res) => res.sendStatus(200))
+
+app.get('/favicon.ico', (req, res) => res.sendStatus(200))
 
 app.get('/api', (req, res) => {
   const url = urlapi.parse(req.url)
