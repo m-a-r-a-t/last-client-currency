@@ -17,13 +17,9 @@ app.use(function (req, res, next) {
   next()
 })
 
+app.get('/', (req, res) => res.sendStatus(200))
 
-
-app.get('/favicon.ico', (req, res) => {
-  console.log(req.url)
-  res.sendStatus(200)
-})
-
+app.get('/favicon.ico', (req, res) => res.sendStatus(200))
 
 app.get('/api', (req, res) => {
   const url = urlapi.parse(req.url)
